@@ -8,17 +8,27 @@ class MyRouteInformationParser extends RouteInformationParser<MyRoutePath> {
       RouteInformation routeInformation) async {
     final uri = Uri.parse(routeInformation.location);
     // Handle '/'
-    if (uri.pathSegments.length == 0) {
-      return MyRoutePath.home();
+    if (uri.pathSegments.length == 0 ||
+        (uri.pathSegments.length == 1 &&
+            uri.pathSegments[0] == FirstSection.book().name)) {
+      return MyRoutePath.book();
     }
+
+/*     if (uri.pathSegments.length <= 1) {
+      return MyRoutePath.unknown();
+    } */
 
     // Handle '/book/:id'
     if (uri.pathSegments.length == 2) {
-      if (uri.pathSegments[0] != 'book') return MyRoutePath.unknown();
-      var remaining = uri.pathSegments[1];
-      var id = int.tryParse(remaining);
-      if (id == null) return MyRoutePath.unknown();
-      return MyRoutePath.details(id);
+      if (uri.pathSegments[0] == FirstSection.user().name &&
+          uri.pathSegments[1] == UserSecondSection.login().name)
+        return MyRoutePath.userLogin();
+      else if (uri.pathSegments[0] == FirstSection.book().name) {
+        var remaining = uri.pathSegments[1];
+        var id = int.tryParse(remaining);
+        if (id == null) return MyRoutePath.unknown();
+        return MyRoutePath.bookDetail(id);
+      }
     }
 
     // Handle unknown routes
@@ -30,12 +40,22 @@ class MyRouteInformationParser extends RouteInformationParser<MyRoutePath> {
     if (path.isUnknown) {
       return RouteInformation(location: '/404');
     }
-    if (path.isHomePage) {
-      return RouteInformation(location: '/');
+    if (path.isBookSection) {
+      if (path.isBookDetailSection)
+        return RouteInformation(
+            location: FirstSection.book().path + '/${path.id}');
+      else
+        return RouteInformation(location: FirstSection.book().path);
     }
-    if (path.isDetailsPage) {
-      return RouteInformation(location: '/book/${path.id}');
+    if (path.isUserSection) {
+      if (path.isUserLoginSection)
+        return RouteInformation(
+            location:
+                FirstSection.user().path + UserSecondSection.login().path);
+      else
+        return RouteInformation(location: FirstSection.user().path);
     }
+
     return null;
   }
 }

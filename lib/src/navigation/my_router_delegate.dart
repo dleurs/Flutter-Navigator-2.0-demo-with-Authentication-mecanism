@@ -4,6 +4,7 @@ import 'package:navigator_v2_flutter_with_auth/src/model/book.dart';
 import 'package:navigator_v2_flutter_with_auth/src/navigation/my_route_path.dart';
 import 'package:navigator_v2_flutter_with_auth/src/navigation/page/book_details_page.dart';
 import 'package:navigator_v2_flutter_with_auth/src/screen/books_list_screen.dart';
+import 'package:navigator_v2_flutter_with_auth/src/screen/login_screen.dart';
 import 'package:navigator_v2_flutter_with_auth/src/screen/unknown_screen.dart';
 
 class MyRouterDelegate extends RouterDelegate<MyRoutePath>
@@ -12,8 +13,11 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
 
   // Should be the same as
   // setNewRoutePath(parseRouteInformation(routeInformation.location='/'))
-  Book _selectedBook;
+  // like MyRoutePath.book(). assert in constructor
   bool show404 = false;
+  FirstSection firstSection = FirstSection.book();
+  SecondSection secondSection;
+  Book _selectedBook;
 
   List<Book> books = [
     Book('Stranger in a Strange Land', 'Robert A. Heinlein'),
@@ -24,15 +28,47 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
   MyRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>() {
     print("1. BookRouterDelegate initialized");
     print(this);
+    assert(MyRoutePath.book() == this.currentConfiguration);
   }
 
   MyRoutePath get currentConfiguration {
     if (show404) {
       return MyRoutePath.unknown();
     }
-    return _selectedBook == null
-        ? MyRoutePath.home()
-        : MyRoutePath.details(books.indexOf(_selectedBook));
+    if (firstSection == FirstSection.book()) {
+      return (_selectedBook == null)
+          ? MyRoutePath.book()
+          : MyRoutePath.bookDetail(books.indexOf(_selectedBook));
+    } else if (firstSection == FirstSection.user()) {
+      return MyRoutePath.userLogin();
+    }
+    return MyRoutePath.unknown();
+  }
+
+  List<Page<dynamic>> buildPage() {
+    List<Page<dynamic>> pages = [];
+    pages.add(
+      MaterialPage(
+        key: ValueKey('BooksListPage'),
+        child: BooksListScreen(
+          books: books,
+          onTappedBook: _handleBookTapped,
+          onTappedUser: _handleUserTapped,
+        ),
+      ),
+    );
+
+    if (firstSection == FirstSection.book()) {
+      if (_selectedBook != null)
+        pages.add(BookDetailsPage(book: _selectedBook));
+    } else if (firstSection == FirstSection.user()) {
+      pages.add(
+          MaterialPage(key: ValueKey('LoginScreen'), child: LoginScreen()));
+    }
+    if (show404)
+      pages.add(
+          MaterialPage(key: ValueKey('UnknownPage'), child: UnknownScreen()));
+    return pages;
   }
 
   @override
@@ -41,29 +77,19 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
     print(this);
     return Navigator(
       key: navigatorKey,
-      pages: [
-        MaterialPage(
-          key: ValueKey('BooksListPage'),
-          child: BooksListScreen(
-            books: books,
-            onTapped: _handleBookTapped,
-          ),
-        ),
-        if (show404)
-          MaterialPage(key: ValueKey('UnknownPage'), child: UnknownScreen())
-        else if (_selectedBook != null)
-          BookDetailsPage(book: _selectedBook)
-      ],
+      pages: buildPage(),
       onPopPage: (route, result) {
+        //print(route);
+        print(currentConfiguration);
         if (!route.didPop(result)) {
           return false;
         }
-
-        // Update the list of pages by setting _selectedBook to null
-        _selectedBook = null;
+        if (currentConfiguration.firstSection == FirstSection.book() &&
+            _selectedBook != null) {
+          _selectedBook = null;
+        }
         show404 = false;
         notifyListeners();
-
         return true;
       },
     );
@@ -72,46 +98,51 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
   @override
   Future<void> setNewRoutePath(MyRoutePath path) async {
     if (path.isUnknown) {
-      _selectedBook = null;
       show404 = true;
+      firstSection = null;
+      secondSection = null;
+      _selectedBook = null;
       return;
     }
 
-    if (path.isDetailsPage) {
-      if (path.id < 0 || path.id > books.length - 1) {
-        show404 = true;
-        return;
-      }
-
-      _selectedBook = books[path.id];
-    } else {
-      _selectedBook = null;
+    if (path.isUserSection) {
+      firstSection = FirstSection.user();
+      if (path.isUserLoginSection) secondSection = UserSecondSection.login();
     }
 
+    if (path.isBookSection) {
+      firstSection = FirstSection.book();
+      if (path.isBookDetailSection) {
+        if (path.id < 0 || path.id > books.length - 1) {
+          show404 = true;
+          return;
+        }
+        _selectedBook = books[path.id];
+      } else {
+        _selectedBook = null;
+      }
+    }
     show404 = false;
   }
 
-/*   @override
-  Future<void> setInitialRoutePath(BookRoutePath path) async {
-    print(path);
-    _selectedBook = null;
-    show404 = true;
-  } */
-
   @override
   String toString() {
-    String str = "BookRouterDelegate : _selectedBook : ";
-    if (_selectedBook == null) {
-      str += "null, show404 : ";
-    } else {
-      str += books.indexOf(_selectedBook).toString() + ", show404 : ";
-    }
-    str += show404.toString();
+    String str = "BookRouterDelegate : show404 = " + show404.toString();
+    str += ", firstSection = " + firstSection.toString();
+    str += ", secondSection = " + secondSection.toString();
+    str += ", _selectedBook = " + _selectedBook.toString();
     return str;
   }
 
   void _handleBookTapped(Book book) {
     _selectedBook = book;
+    notifyListeners();
+  }
+
+  void _handleUserTapped(Book book) {
+    //TODO remove the book
+    _selectedBook = null;
+    firstSection = FirstSection.user();
     notifyListeners();
   }
 }
