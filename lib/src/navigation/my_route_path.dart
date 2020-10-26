@@ -35,10 +35,6 @@ abstract class SecondSection extends Equatable {
   List<Object> get props => [name, path];
 }
 
-class UserSecondSection extends SecondSection {
-  UserSecondSection.login() : super("login", "/login");
-}
-
 extension UserSection on SecondSection {}
 
 class MyRoutePath extends Equatable {
@@ -47,10 +43,10 @@ class MyRoutePath extends Equatable {
   final SecondSection secondSection;
   final int id;
 
-  MyRoutePath.userLogin()
+  MyRoutePath.user()
       : isUnknown = false,
         firstSection = FirstSection.user(),
-        secondSection = UserSecondSection.login(),
+        secondSection = null,
         id = null;
 
   MyRoutePath.book()
@@ -71,9 +67,6 @@ class MyRoutePath extends Equatable {
         id = null;
 
   bool get isUserSection => (firstSection == FirstSection.user());
-
-  bool get isUserLoginSection =>
-      (isUserSection && secondSection == UserSecondSection.login());
 
   bool get isBookSection => (firstSection == FirstSection.book());
 

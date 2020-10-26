@@ -7,23 +7,21 @@ class MyRouteInformationParser extends RouteInformationParser<MyRoutePath> {
   Future<MyRoutePath> parseRouteInformation(
       RouteInformation routeInformation) async {
     final uri = Uri.parse(routeInformation.location);
-    // Handle '/'
+    // Handle '/' and '/book'
     if (uri.pathSegments.length == 0 ||
         (uri.pathSegments.length == 1 &&
             uri.pathSegments[0] == FirstSection.book().name)) {
       return MyRoutePath.book();
     }
 
-/*     if (uri.pathSegments.length <= 1) {
-      return MyRoutePath.unknown();
-    } */
+    if ((uri.pathSegments.length == 1 &&
+        uri.pathSegments[0] == FirstSection.user().name)) {
+      return MyRoutePath.user();
+    }
 
     // Handle '/book/:id'
     if (uri.pathSegments.length == 2) {
-      if (uri.pathSegments[0] == FirstSection.user().name &&
-          uri.pathSegments[1] == UserSecondSection.login().name)
-        return MyRoutePath.userLogin();
-      else if (uri.pathSegments[0] == FirstSection.book().name) {
+      if (uri.pathSegments[0] == FirstSection.book().name) {
         var remaining = uri.pathSegments[1];
         var id = int.tryParse(remaining);
         if (id == null) return MyRoutePath.unknown();
@@ -48,12 +46,7 @@ class MyRouteInformationParser extends RouteInformationParser<MyRoutePath> {
         return RouteInformation(location: FirstSection.book().path);
     }
     if (path.isUserSection) {
-      if (path.isUserLoginSection)
-        return RouteInformation(
-            location:
-                FirstSection.user().path + UserSecondSection.login().path);
-      else
-        return RouteInformation(location: FirstSection.user().path);
+      return RouteInformation(location: FirstSection.user().path);
     }
 
     return null;

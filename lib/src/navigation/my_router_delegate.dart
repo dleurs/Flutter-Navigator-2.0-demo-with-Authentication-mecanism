@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:navigator_v2_flutter_with_auth/src/model/book.dart';
 import 'package:navigator_v2_flutter_with_auth/src/navigation/my_route_path.dart';
-import 'package:navigator_v2_flutter_with_auth/src/navigation/page/book_details_page.dart';
+import 'package:navigator_v2_flutter_with_auth/src/screen/page/book_details_page.dart';
 import 'package:navigator_v2_flutter_with_auth/src/screen/books_list_screen.dart';
-import 'package:navigator_v2_flutter_with_auth/src/screen/login_screen.dart';
+import 'package:navigator_v2_flutter_with_auth/src/screen/user_screen.dart';
 import 'package:navigator_v2_flutter_with_auth/src/screen/unknown_screen.dart';
 
 class MyRouterDelegate extends RouterDelegate<MyRoutePath>
@@ -40,7 +40,7 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
           ? MyRoutePath.book()
           : MyRoutePath.bookDetail(books.indexOf(_selectedBook));
     } else if (firstSection == FirstSection.user()) {
-      return MyRoutePath.userLogin();
+      return MyRoutePath.user();
     }
     return MyRoutePath.unknown();
   }
@@ -60,10 +60,14 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
 
     if (firstSection == FirstSection.book()) {
       if (_selectedBook != null)
-        pages.add(BookDetailsPage(book: _selectedBook));
+        pages.add(BookDetailsPage(
+            book: _selectedBook, onTappedUser: _handleUserTapped));
     } else if (firstSection == FirstSection.user()) {
-      pages.add(
-          MaterialPage(key: ValueKey('LoginScreen'), child: LoginScreen()));
+      pages.add(MaterialPage(
+          key: ValueKey('LoginScreen'),
+          child: UserScreen(
+            refresh: _refresh,
+          )));
     }
     if (show404)
       pages.add(
@@ -88,7 +92,6 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
           _selectedBook = null;
         } else if (firstSection == FirstSection.user()) {
           firstSection = FirstSection.book();
-          secondSection = null;
         }
         show404 = false;
         notifyListeners();
@@ -109,7 +112,6 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
 
     if (path.isUserSection) {
       firstSection = FirstSection.user();
-      if (path.isUserLoginSection) secondSection = UserSecondSection.login();
     }
 
     if (path.isBookSection) {
@@ -142,9 +144,11 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
   }
 
   void _handleUserTapped(dynamic nothing) {
-    //TODO remove the book
-    _selectedBook = null;
     firstSection = FirstSection.user();
+    notifyListeners();
+  }
+
+  void _refresh(dynamic nothing) {
     notifyListeners();
   }
 }
