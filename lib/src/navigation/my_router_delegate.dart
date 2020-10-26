@@ -79,14 +79,16 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
       key: navigatorKey,
       pages: buildPage(),
       onPopPage: (route, result) {
-        //print(route);
-        print(currentConfiguration);
+        print("onPopPage");
+        print(this);
         if (!route.didPop(result)) {
           return false;
-        }
-        if (currentConfiguration.firstSection == FirstSection.book() &&
+        } else if (firstSection == FirstSection.book() &&
             _selectedBook != null) {
           _selectedBook = null;
+        } else if (firstSection == FirstSection.user()) {
+          firstSection = FirstSection.book();
+          secondSection = null;
         }
         show404 = false;
         notifyListeners();
@@ -139,7 +141,7 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
     notifyListeners();
   }
 
-  void _handleUserTapped(Book book) {
+  void _handleUserTapped(dynamic nothing) {
     //TODO remove the book
     _selectedBook = null;
     firstSection = FirstSection.user();

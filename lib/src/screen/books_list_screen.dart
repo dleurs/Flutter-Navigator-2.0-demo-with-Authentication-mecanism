@@ -5,7 +5,7 @@ import 'package:navigator_v2_flutter_with_auth/src/model/book.dart';
 class BooksListScreen extends StatelessWidget {
   final List<Book> books;
   final ValueChanged<Book> onTappedBook;
-  final ValueChanged<Book> onTappedUser;
+  final ValueChanged onTappedUser;
 
   BooksListScreen({
     @required this.books,
@@ -17,8 +17,7 @@ class BooksListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(actions: <Widget>[
-        IconButton(
-            icon: Icon(Icons.logout), onPressed: () => onTappedUser(null))
+        IconButton(icon: Icon(Icons.logout), onPressed: () => onTappedUser)
       ]),
       body: ListView(
         children: [

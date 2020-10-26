@@ -20,6 +20,7 @@ class _AppState extends State<App> {
     return BlocProvider<AuthenticationBloc>(
         create: (context) => AuthenticationBloc(LoginRepository()),
         child: MaterialApp.router(
+          debugShowCheckedModeBanner: false,
           title: 'Books App',
           routerDelegate: _routerDelegate,
           routeInformationParser: _routeInformationParser,
