@@ -1,6 +1,9 @@
 # Navigator 2.0 Flutter with authentication example
 
-![Demo app in GIF](/assets/demo-app.gif)
+![Demo web app in GIF](/assets/demo-app-web.gif)
+
+
+![Demo app iPhone in GIF](/assets/demo-app-iphone.gif)
 
 ## Understanding Navigator 2.0
 
