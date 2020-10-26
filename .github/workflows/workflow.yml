@@ -1,4 +1,8 @@
-name: Flutter Webon: [push]jobs:
+name: Flutter Web
+
+on: [push]
+
+jobs:
   build:runs-on: ubuntu-latest
         
     steps:
