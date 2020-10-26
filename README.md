@@ -25,3 +25,7 @@
 - https://www.youtube.com/watch?v=wH16ROWAtAk
 - https://www.youtube.com/watch?v=FBoAXUkHu44
 - https://docs.google.com/document/d/1Q0jx0l4-xymph9O6zLaOY4d_f7YFpNWX_eGbzYxr9wY/edit
+
+## Flutter Web to Github Pages
+
+- https://medium.com/@zonble/use-github-pages-to-host-your-flutter-web-app-as-an-example-of-your-flutter-package-cb7b5b726eb1

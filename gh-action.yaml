@@ -1,2 +1,0 @@
-- name: Deploy Flutter web app to github pages
-  uses: erickzanardo/flutter-gh-pages@v1
