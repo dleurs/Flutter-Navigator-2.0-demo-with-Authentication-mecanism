@@ -28,4 +28,4 @@
 
 ## Flutter Web to Github Pages
 
-- https://medium.com/@zonble/use-github-pages-to-host-your-flutter-web-app-as-an-example-of-your-flutter-package-cb7b5b726eb1
+- https://www.youtube.com/watch?v=54SM24tLlhc
