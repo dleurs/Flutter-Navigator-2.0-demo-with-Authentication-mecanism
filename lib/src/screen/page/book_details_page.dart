@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 import 'package:navigator_v2_flutter_with_auth/src/model/book.dart';
@@ -5,7 +7,7 @@ import 'package:navigator_v2_flutter_with_auth/src/screen/book_details_screen.da
 
 class BookDetailsPage extends Page {
   final Book book;
-  final ValueChanged onTappedUser;
+  final ValueChanged<Void> onTappedUser;
 
   BookDetailsPage({
     this.book,

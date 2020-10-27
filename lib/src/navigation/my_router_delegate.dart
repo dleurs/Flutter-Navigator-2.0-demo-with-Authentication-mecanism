@@ -11,13 +11,9 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<MyRoutePath> {
   final GlobalKey<NavigatorState> navigatorKey;
 
-  // Should be the same as
-  // setNewRoutePath(parseRouteInformation(routeInformation.location='/'))
-  // like MyRoutePath.book(). assert in constructor
-  bool show404 = false;
-  FirstSection firstSection = FirstSection.book();
-  SecondSection secondSection;
-  Book _selectedBook;
+  MyRoutePath currentState = MyRoutePath.book();
+  MyRoutePath previousState;
+  // for pop on User Page, to possibly go back to a specific book
 
   List<Book> books = [
     Book('Stranger in a Strange Land', 'Robert A. Heinlein'),
@@ -32,17 +28,7 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
   }
 
   MyRoutePath get currentConfiguration {
-    if (show404) {
-      return MyRoutePath.unknown();
-    }
-    if (firstSection == FirstSection.book()) {
-      return (_selectedBook == null)
-          ? MyRoutePath.book()
-          : MyRoutePath.bookDetail(books.indexOf(_selectedBook));
-    } else if (firstSection == FirstSection.user()) {
-      return MyRoutePath.user();
-    }
-    return MyRoutePath.unknown();
+    return currentState;
   }
 
   List<Page<dynamic>> buildPage() {
@@ -58,18 +44,18 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
       ),
     );
 
-    if (firstSection == FirstSection.book()) {
-      if (_selectedBook != null)
+    if (currentState.firstSection == FirstSection.book()) {
+      if (currentState.id != null)
         pages.add(BookDetailsPage(
-            book: _selectedBook, onTappedUser: _handleUserTapped));
-    } else if (firstSection == FirstSection.user()) {
+            book: books[currentState.id], onTappedUser: _handleUserTapped));
+    } else if (currentState.firstSection == FirstSection.user()) {
       pages.add(MaterialPage(
           key: ValueKey('LoginScreen'),
           child: UserScreen(
-            refresh: _refresh,
+            refresh: _notifyListeners,
           )));
     }
-    if (show404)
+    if (currentState.isUnknown)
       pages.add(
           MaterialPage(key: ValueKey('UnknownPage'), child: UnknownScreen()));
     return pages;
@@ -78,22 +64,24 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
   @override
   Widget build(BuildContext context) {
     print("BookRouterDelegate building...");
-    print(this);
+    print(this.currentState);
     return Navigator(
       key: navigatorKey,
       pages: buildPage(),
       onPopPage: (route, result) {
         print("onPopPage");
-        print(this);
+        print(this.currentState);
         if (!route.didPop(result)) {
           return false;
-        } else if (firstSection == FirstSection.book() &&
-            _selectedBook != null) {
-          _selectedBook = null;
-        } else if (firstSection == FirstSection.user()) {
-          firstSection = FirstSection.book();
+        } else if (currentState.firstSection == FirstSection.book() &&
+            currentState.id != null) {
+          currentState = MyRoutePath.book();
+        } else if (currentState.firstSection == FirstSection.user()) {
+          currentState = previousState;
+          previousState = null;
+        } else {
+          currentState = MyRoutePath.unknown();
         }
-        show404 = false;
         notifyListeners();
         return true;
       },
@@ -103,52 +91,39 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
   @override
   Future<void> setNewRoutePath(MyRoutePath path) async {
     if (path.isUnknown) {
-      show404 = true;
-      firstSection = null;
-      secondSection = null;
-      _selectedBook = null;
+      currentState = MyRoutePath.unknown();
       return;
     }
 
     if (path.isUserSection) {
-      firstSection = FirstSection.user();
+      currentState = MyRoutePath.user();
     }
 
     if (path.isBookSection) {
-      firstSection = FirstSection.book();
       if (path.isBookDetailSection) {
         if (path.id < 0 || path.id > books.length - 1) {
-          show404 = true;
+          currentState = MyRoutePath.unknown();
           return;
         }
-        _selectedBook = books[path.id];
+        currentState = MyRoutePath.bookDetail(path.id);
       } else {
-        _selectedBook = null;
+        currentState = MyRoutePath.book();
       }
     }
-    show404 = false;
-  }
-
-  @override
-  String toString() {
-    String str = "BookRouterDelegate : show404 = " + show404.toString();
-    str += ", firstSection = " + firstSection.toString();
-    str += ", secondSection = " + secondSection.toString();
-    str += ", _selectedBook = " + _selectedBook.toString();
-    return str;
   }
 
   void _handleBookTapped(Book book) {
-    _selectedBook = book;
+    currentState = MyRoutePath.bookDetail(books.indexOf(book));
     notifyListeners();
   }
 
-  void _handleUserTapped(dynamic nothing) {
-    firstSection = FirstSection.user();
+  void _handleUserTapped(void nothing) {
+    previousState = currentState;
+    currentState = MyRoutePath.user();
     notifyListeners();
   }
 
-  void _refresh(dynamic nothing) {
+  void _notifyListeners(void nothing) {
     notifyListeners();
   }
 }

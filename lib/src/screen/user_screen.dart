@@ -1,10 +1,12 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:navigator_v2_flutter_with_auth/src/core/authentication/authentication_manager.dart';
 
 import 'package:navigator_v2_flutter_with_auth/src/screen/base_screen.dart';
 
 class UserScreen extends StatefulWidget {
-  final ValueChanged refresh;
+  final ValueChanged<Void> refresh;
 
   UserScreen({Key key, @required this.refresh}) : super(key: key);
 

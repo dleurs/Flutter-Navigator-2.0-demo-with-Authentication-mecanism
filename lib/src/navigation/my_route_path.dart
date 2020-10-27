@@ -8,7 +8,7 @@ abstract class Section extends Equatable {
   Section({@required this.name, @required this.path});
 
   String toString() {
-    return "Section, name = " + name + ", path = " + path;
+    return "Section:name=" + name + ",path=" + path;
   }
 
   @override
@@ -61,13 +61,13 @@ class MyRoutePath extends Equatable {
 
   @override
   String toString() {
-    return "MyRoutePath : isUnknown = " +
+    return "isUnknown=" +
         isUnknown.toString() +
-        ", firstSection = " +
+        ",fstSect=" +
         firstSection.toString() +
-        ", secondSection = " +
+        ",sndSect=" +
         secondSection.toString() +
-        ",id = " +
+        ",id=" +
         id.toString();
   }
 
