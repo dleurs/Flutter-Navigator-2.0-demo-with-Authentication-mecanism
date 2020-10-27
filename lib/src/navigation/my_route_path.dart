@@ -1,41 +1,28 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
-class FirstSection extends Equatable {
+abstract class Section extends Equatable {
   final String name;
   final String path;
-  //final bool needsAuthentication;
-  FirstSection.book()
-      : name = "book",
-        path = "/book"; // not /book because it is initial page
-  FirstSection.user()
-      : name = "user",
-        path = "/user";
 
-  @override
+  Section({@required this.name, @required this.path});
+
   String toString() {
-    return "FirstSection : name = " + name + ", path = " + path;
+    return "Section, name = " + name + ", path = " + path;
   }
 
   @override
   List<Object> get props => [name, path];
 }
 
-abstract class SecondSection extends Equatable {
-  final String name;
-  final String path;
-
-  SecondSection(this.name, this.path);
-
-  @override
-  String toString() {
-    return "SecondSection : name = " + name + ", path = " + path;
-  }
-
-  @override
-  List<Object> get props => [name, path];
+class FirstSection extends Section {
+  FirstSection.book() : super(name: "book", path: "/book");
+  FirstSection.user() : super(name: "user", path: "/user");
 }
 
-extension UserSection on SecondSection {}
+class SecondSection extends Section {}
+
+class UserSecondSection extends Section {}
 
 class MyRoutePath extends Equatable {
   final bool isUnknown;
