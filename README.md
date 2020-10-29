@@ -2,7 +2,7 @@
 
 ![Demo web app in GIF](/assets/demo-app-web.gif)
 
-Online : 
+Online : https://dleurs.github.io/Flutter-Navigator-2.0-demo-with-Authentication-mecanism/#/
 
 ![Demo app iPhone in GIF](/assets/demo-app-iphone.gif)
 
