@@ -89,27 +89,9 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
   }
 
   @override
-  Future<void> setNewRoutePath(MyRoutePath path) async {
-    if (path.isUnknown) {
-      currentState = MyRoutePath.unknown();
-      return;
-    }
-
-    if (path.isUserSection) {
-      currentState = MyRoutePath.user();
-    }
-
-    if (path.isBookSection) {
-      if (path.isBookDetailSection) {
-        if (path.id < 0 || path.id > books.length - 1) {
-          currentState = MyRoutePath.unknown();
-          return;
-        }
-        currentState = MyRoutePath.bookDetail(path.id);
-      } else {
-        currentState = MyRoutePath.book();
-      }
-    }
+  Future<void> setNewRoutePath(MyRoutePath newState) async {
+    currentState = newState;
+    return;
   }
 
   void _handleBookTapped(Book book) {
