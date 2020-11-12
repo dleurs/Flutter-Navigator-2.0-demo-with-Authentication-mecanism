@@ -8,7 +8,7 @@ abstract class UrlSection extends Equatable {
   UrlSection({@required this.name, @required this.urlName});
 
   String toString() {
-    return "Section:name=" + name + ",path=" + urlName;
+    return "Section{name:" + name + ",path:" + urlName + "}";
   }
 
   @override
@@ -24,30 +24,30 @@ class UrlSecondSection extends UrlSection {}
 
 class UrlSecondSectionUser extends UrlSection {}
 
-class MyRoutePath extends Equatable {
+class AppState extends Equatable {
   final bool isUnknown;
   final UrlFirstSection firstSection;
   final UrlSecondSection secondSection;
   final int id;
 
-  MyRoutePath.user()
+  AppState.user()
       : isUnknown = false,
         firstSection = UrlFirstSection.user(),
         secondSection = null,
         id = null;
 
-  MyRoutePath.book()
+  AppState.book()
       : isUnknown = false,
         firstSection = UrlFirstSection.book(),
         secondSection = null,
         id = null;
 
-  MyRoutePath.bookDetail(this.id)
+  AppState.bookDetail(this.id)
       : isUnknown = false,
         firstSection = UrlFirstSection.book(),
         secondSection = null;
 
-  MyRoutePath.unknown()
+  AppState.unknown()
       : isUnknown = true,
         firstSection = null,
         secondSection = null,
@@ -61,14 +61,15 @@ class MyRoutePath extends Equatable {
 
   @override
   String toString() {
-    return "isUnknown=" +
+    return "AppState{ isUnknown : " +
         isUnknown.toString() +
-        ",fstSect=" +
+        ", firstSection : " +
         firstSection.toString() +
-        ",sndSect=" +
+        ", secondSection : " +
         secondSection.toString() +
-        ",id=" +
-        id.toString();
+        ", id : " +
+        id.toString() +
+        "}";
   }
 
   @override
