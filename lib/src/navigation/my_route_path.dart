@@ -1,50 +1,50 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-abstract class Section extends Equatable {
+abstract class UrlSection extends Equatable {
   final String name;
-  final String path;
+  final String urlName;
 
-  Section({@required this.name, @required this.path});
+  UrlSection({@required this.name, @required this.urlName});
 
   String toString() {
-    return "Section:name=" + name + ",path=" + path;
+    return "Section:name=" + name + ",path=" + urlName;
   }
 
   @override
-  List<Object> get props => [name, path];
+  List<Object> get props => [name, urlName];
 }
 
-class FirstSection extends Section {
-  FirstSection.book() : super(name: "book", path: "/book");
-  FirstSection.user() : super(name: "user", path: "/user");
+class UrlFirstSection extends UrlSection {
+  UrlFirstSection.book() : super(name: "book", urlName: "book");
+  UrlFirstSection.user() : super(name: "user", urlName: "user");
 }
 
-class SecondSection extends Section {}
+class UrlSecondSection extends UrlSection {}
 
-class UserSecondSection extends Section {}
+class UrlSecondSectionUser extends UrlSection {}
 
 class MyRoutePath extends Equatable {
   final bool isUnknown;
-  final FirstSection firstSection;
-  final SecondSection secondSection;
+  final UrlFirstSection firstSection;
+  final UrlSecondSection secondSection;
   final int id;
 
   MyRoutePath.user()
       : isUnknown = false,
-        firstSection = FirstSection.user(),
+        firstSection = UrlFirstSection.user(),
         secondSection = null,
         id = null;
 
   MyRoutePath.book()
       : isUnknown = false,
-        firstSection = FirstSection.book(),
+        firstSection = UrlFirstSection.book(),
         secondSection = null,
         id = null;
 
   MyRoutePath.bookDetail(this.id)
       : isUnknown = false,
-        firstSection = FirstSection.book(),
+        firstSection = UrlFirstSection.book(),
         secondSection = null;
 
   MyRoutePath.unknown()
@@ -53,9 +53,9 @@ class MyRoutePath extends Equatable {
         secondSection = null,
         id = null;
 
-  bool get isUserSection => (firstSection == FirstSection.user());
+  bool get isUserSection => (firstSection == UrlFirstSection.user());
 
-  bool get isBookSection => (firstSection == FirstSection.book());
+  bool get isBookSection => (firstSection == UrlFirstSection.book());
 
   bool get isBookDetailSection => (isBookSection && id != null);
 

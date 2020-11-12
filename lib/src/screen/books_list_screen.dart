@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:navigator_v2_flutter_with_auth/src/core/authentication/authentication_manager.dart';
 
 import 'package:navigator_v2_flutter_with_auth/src/model/book.dart';
+import 'package:navigator_v2_flutter_with_auth/src/navigation/my_router_delegate.dart';
 
 class BooksListScreen extends StatelessWidget {
   final List<Book> books;
-  final ValueChanged<Book> onTappedBook;
-  final ValueChanged onTappedUser;
 
   BooksListScreen({
     @required this.books,
-    @required this.onTappedBook,
-    @required this.onTappedUser,
   });
 
   @override
@@ -24,7 +21,8 @@ class BooksListScreen extends StatelessWidget {
                 Icons.portrait,
               ),
               onPressed: () {
-                onTappedUser(null);
+                (Router.of(context).routerDelegate as MyRouterDelegate)
+                    .handleUserTapped(null);
               })
         ],
       ),
@@ -44,10 +42,12 @@ class BooksListScreen extends StatelessWidget {
             children: [
               for (var book in books)
                 ListTile(
-                  title: Text(book.title),
-                  subtitle: Text(book.author),
-                  onTap: () => onTappedBook(book),
-                )
+                    title: Text(book.title),
+                    subtitle: Text(book.author),
+                    onTap: () {
+                      (Router.of(context).routerDelegate as MyRouterDelegate)
+                          .handleBookTapped(book);
+                    })
             ],
           ),
         ],

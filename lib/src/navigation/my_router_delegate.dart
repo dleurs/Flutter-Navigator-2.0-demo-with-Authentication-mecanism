@@ -38,17 +38,14 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
         key: ValueKey('BooksListPage'),
         child: BooksListScreen(
           books: books,
-          onTappedBook: _handleBookTapped,
-          onTappedUser: _handleUserTapped,
         ),
       ),
     );
 
-    if (currentState.firstSection == FirstSection.book()) {
+    if (currentState.firstSection == UrlFirstSection.book()) {
       if (currentState.id != null)
-        pages.add(BookDetailsPage(
-            book: books[currentState.id], onTappedUser: _handleUserTapped));
-    } else if (currentState.firstSection == FirstSection.user()) {
+        pages.add(BookDetailsPage(book: books[currentState.id]));
+    } else if (currentState.firstSection == UrlFirstSection.user()) {
       pages.add(MaterialPage(
           key: ValueKey('LoginScreen'),
           child: UserScreen(
@@ -73,10 +70,10 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
         print(this.currentState);
         if (!route.didPop(result)) {
           return false;
-        } else if (currentState.firstSection == FirstSection.book() &&
+        } else if (currentState.firstSection == UrlFirstSection.book() &&
             currentState.id != null) {
           currentState = MyRoutePath.book();
-        } else if (currentState.firstSection == FirstSection.user()) {
+        } else if (currentState.firstSection == UrlFirstSection.user()) {
           currentState = previousState;
           previousState = null;
         } else {
@@ -94,12 +91,12 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
     return;
   }
 
-  void _handleBookTapped(Book book) {
+  void handleBookTapped(Book book) {
     currentState = MyRoutePath.bookDetail(books.indexOf(book));
     notifyListeners();
   }
 
-  void _handleUserTapped(void nothing) {
+  void handleUserTapped(void nulll) {
     previousState = currentState;
     currentState = MyRoutePath.user();
     notifyListeners();

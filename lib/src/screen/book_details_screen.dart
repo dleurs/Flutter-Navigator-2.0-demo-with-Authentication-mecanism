@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:navigator_v2_flutter_with_auth/src/model/book.dart';
+import 'package:navigator_v2_flutter_with_auth/src/navigation/my_router_delegate.dart';
 
 class BookDetailsScreen extends StatelessWidget {
   final Book book;
-  final ValueChanged onTappedUser;
 
   BookDetailsScreen({
     @required this.book,
-    @required this.onTappedUser,
   });
 
   @override
@@ -21,7 +20,8 @@ class BookDetailsScreen extends StatelessWidget {
                 Icons.portrait,
               ),
               onPressed: () {
-                onTappedUser(null);
+                (Router.of(context).routerDelegate as MyRouterDelegate)
+                    .handleUserTapped(null);
               })
         ],
       ),

@@ -10,18 +10,18 @@ class MyRouteInformationParser extends RouteInformationParser<MyRoutePath> {
     // Handle '/' and '/book'
     if (uri.pathSegments.length == 0 ||
         (uri.pathSegments.length == 1 &&
-            uri.pathSegments[0] == FirstSection.book().name)) {
+            uri.pathSegments[0] == UrlFirstSection.book().name)) {
       return MyRoutePath.book();
     }
 
     if ((uri.pathSegments.length == 1 &&
-        uri.pathSegments[0] == FirstSection.user().name)) {
+        uri.pathSegments[0] == UrlFirstSection.user().name)) {
       return MyRoutePath.user();
     }
 
     // Handle '/book/:id'
     if (uri.pathSegments.length == 2) {
-      if (uri.pathSegments[0] == FirstSection.book().name) {
+      if (uri.pathSegments[0] == UrlFirstSection.book().name) {
         var remaining = uri.pathSegments[1];
         var id = int.tryParse(remaining);
         if (id == null) return MyRoutePath.unknown();
@@ -41,12 +41,12 @@ class MyRouteInformationParser extends RouteInformationParser<MyRoutePath> {
     if (path.isBookSection) {
       if (path.isBookDetailSection)
         return RouteInformation(
-            location: FirstSection.book().path + '/${path.id}');
+            location: '/' + UrlFirstSection.book().urlName + '/${path.id}');
       else
-        return RouteInformation(location: FirstSection.book().path);
+        return RouteInformation(location: '/' + UrlFirstSection.book().urlName);
     }
     if (path.isUserSection) {
-      return RouteInformation(location: FirstSection.user().path);
+      return RouteInformation(location: '/' + UrlFirstSection.user().urlName);
     }
 
     return null;
