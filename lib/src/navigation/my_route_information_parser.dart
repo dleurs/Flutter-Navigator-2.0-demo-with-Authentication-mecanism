@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 
-import 'package:navigator_v2_flutter_with_auth/src/navigation/my_route_path.dart';
+import 'package:navigator_v2_flutter_with_auth/src/navigation/app_config.dart';
 
-class MyRouteInformationParser extends RouteInformationParser<MyRoutePath> {
+class MyRouteInformationParser extends RouteInformationParser<AppConfig> {
   @override
-  Future<MyRoutePath> parseRouteInformation(
+  Future<AppConfig> parseRouteInformation(
       RouteInformation routeInformation) async {
     final uri = Uri.parse(routeInformation.location);
     // Handle '/' and '/book'
     if (uri.pathSegments.length == 0 ||
         (uri.pathSegments.length == 1 &&
             uri.pathSegments[0] == UrlFirstSection.book().name)) {
-      return MyRoutePath.book();
+      return AppConfig.book();
     }
 
     if ((uri.pathSegments.length == 1 &&
         uri.pathSegments[0] == UrlFirstSection.user().name)) {
-      return MyRoutePath.user();
+      return AppConfig.user();
     }
 
     // Handle '/book/:id'
@@ -24,17 +24,17 @@ class MyRouteInformationParser extends RouteInformationParser<MyRoutePath> {
       if (uri.pathSegments[0] == UrlFirstSection.book().name) {
         var remaining = uri.pathSegments[1];
         var id = int.tryParse(remaining);
-        if (id == null) return MyRoutePath.unknown();
-        return MyRoutePath.bookDetail(id);
+        if (id == null) return AppConfig.unknown();
+        return AppConfig.bookDetail(id);
       }
     }
 
     // Handle unknown routes
-    return MyRoutePath.unknown();
+    return AppConfig.unknown();
   }
 
   @override
-  RouteInformation restoreRouteInformation(MyRoutePath path) {
+  RouteInformation restoreRouteInformation(AppConfig path) {
     if (path.isUnknown) {
       return RouteInformation(location: '/404');
     }

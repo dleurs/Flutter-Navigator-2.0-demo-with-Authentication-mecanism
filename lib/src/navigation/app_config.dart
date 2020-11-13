@@ -24,30 +24,30 @@ class UrlSecondSection extends UrlSection {}
 
 class UrlSecondSectionUser extends UrlSection {}
 
-class AppState extends Equatable {
+class AppConfig extends Equatable {
   final bool isUnknown;
   final UrlFirstSection firstSection;
   final UrlSecondSection secondSection;
   final int id;
 
-  AppState.user()
+  AppConfig.user()
       : isUnknown = false,
         firstSection = UrlFirstSection.user(),
         secondSection = null,
         id = null;
 
-  AppState.book()
+  AppConfig.book()
       : isUnknown = false,
         firstSection = UrlFirstSection.book(),
         secondSection = null,
         id = null;
 
-  AppState.bookDetail(this.id)
+  AppConfig.bookDetail(this.id)
       : isUnknown = false,
         firstSection = UrlFirstSection.book(),
         secondSection = null;
 
-  AppState.unknown()
+  AppConfig.unknown()
       : isUnknown = true,
         firstSection = null,
         secondSection = null,

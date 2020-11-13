@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
 import 'package:navigator_v2_flutter_with_auth/src/model/book.dart';
-import 'package:navigator_v2_flutter_with_auth/src/navigation/my_route_path.dart';
-import 'package:navigator_v2_flutter_with_auth/src/screen/page/book_details_page.dart';
+import 'package:navigator_v2_flutter_with_auth/src/navigation/app_config.dart';
+import 'package:navigator_v2_flutter_with_auth/src/screen/book_details_screen.dart';
 import 'package:navigator_v2_flutter_with_auth/src/screen/books_list_screen.dart';
 import 'package:navigator_v2_flutter_with_auth/src/screen/user_screen.dart';
 import 'package:navigator_v2_flutter_with_auth/src/screen/unknown_screen.dart';
 
-class MyRouterDelegate extends RouterDelegate<MyRoutePath>
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin<MyRoutePath> {
+class MyRouterDelegate extends RouterDelegate<AppConfig>
+    with ChangeNotifier, PopNavigatorRouterDelegateMixin<AppConfig> {
   final GlobalKey<NavigatorState> navigatorKey;
 
-  MyRoutePath currentState = MyRoutePath.book();
-  MyRoutePath previousState;
+  AppConfig currentState = AppConfig.book();
+  AppConfig previousState;
   // for pop on User Page, to possibly go back to a specific book
 
   List<Book> books = [
@@ -24,10 +24,10 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
   MyRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>() {
     print("1. BookRouterDelegate initialized");
     print(this);
-    assert(MyRoutePath.book() == this.currentConfiguration);
+    assert(AppConfig.book() == this.currentConfiguration);
   }
 
-  MyRoutePath get currentConfiguration {
+  AppConfig get currentConfiguration {
     return currentState;
   }
 
@@ -44,7 +44,11 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
 
     if (currentState.firstSection == UrlFirstSection.book()) {
       if (currentState.id != null)
-        pages.add(BookDetailsPage(book: books[currentState.id]));
+        pages.add(
+          MaterialPage(
+              key: ValueKey('BookListPageId' + currentState.id.toString()),
+              child: BookDetailsScreen(book: books[currentState.id])),
+        );
     } else if (currentState.firstSection == UrlFirstSection.user()) {
       pages.add(MaterialPage(
           key: ValueKey('LoginScreen'),
@@ -64,20 +68,19 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
     print(this.currentState);
     return Navigator(
       key: navigatorKey,
+      //transitionDelegate: AnimationTransitionDelegate(),
       pages: buildPage(),
       onPopPage: (route, result) {
-        print("onPopPage");
-        print(this.currentState);
         if (!route.didPop(result)) {
           return false;
         } else if (currentState.firstSection == UrlFirstSection.book() &&
             currentState.id != null) {
-          currentState = MyRoutePath.book();
+          currentState = AppConfig.book();
         } else if (currentState.firstSection == UrlFirstSection.user()) {
           currentState = previousState;
           previousState = null;
         } else {
-          currentState = MyRoutePath.unknown();
+          currentState = AppConfig.unknown();
         }
         notifyListeners();
         return true;
@@ -86,19 +89,19 @@ class MyRouterDelegate extends RouterDelegate<MyRoutePath>
   }
 
   @override
-  Future<void> setNewRoutePath(MyRoutePath newState) async {
+  Future<void> setNewRoutePath(AppConfig newState) async {
     currentState = newState;
     return;
   }
 
   void handleBookTapped(Book book) {
-    currentState = MyRoutePath.bookDetail(books.indexOf(book));
+    currentState = AppConfig.bookDetail(books.indexOf(book));
     notifyListeners();
   }
 
   void handleUserTapped(void nulll) {
     previousState = currentState;
-    currentState = MyRoutePath.user();
+    currentState = AppConfig.user();
     notifyListeners();
   }
 
