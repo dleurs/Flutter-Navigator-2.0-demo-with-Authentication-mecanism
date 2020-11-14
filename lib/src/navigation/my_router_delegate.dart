@@ -41,15 +41,15 @@ class MyRouterDelegate extends RouterDelegate<AppConfig>
         ),
       ),
     );
-
-    if (currentState.firstSection == UrlFirstSection.book()) {
-      if (currentState.id != null)
-        pages.add(
-          MaterialPage(
-              key: ValueKey('BookListPageId' + currentState.id.toString()),
-              child: BookDetailsScreen(book: books[currentState.id])),
-        );
-    } else if (currentState.firstSection == UrlFirstSection.user()) {
+    if (currentState.firstSection == UrlFirstSection.book() &&
+        currentState.id != null) {
+      pages.add(
+        MaterialPage(
+            key: ValueKey('BookListPageId' + currentState.id.toString()),
+            child: BookDetailsScreen(book: books[currentState.id])),
+      );
+    }
+    if (currentState.firstSection == UrlFirstSection.user()) {
       pages.add(MaterialPage(
           key: ValueKey('LoginScreen'),
           child: UserScreen(
