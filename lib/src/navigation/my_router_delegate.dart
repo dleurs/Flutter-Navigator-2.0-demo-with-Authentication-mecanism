@@ -42,14 +42,16 @@ class MyRouterDelegate extends RouterDelegate<AppConfig>
       ),
     );
 
-    if (currentState.firstSection == UrlFirstSection.book()) {
+    if (currentState.uri.pathSegments[0] ==
+        AppConfig.book().uri.pathSegments[0]) {
       if (currentState.id != null)
         pages.add(
           MaterialPage(
               key: ValueKey('BookListPageId' + currentState.id.toString()),
               child: BookDetailsScreen(book: books[currentState.id])),
         );
-    } else if (currentState.firstSection == UrlFirstSection.user()) {
+    } else if (currentState.uri.pathSegments[0] ==
+        AppConfig.user().uri.pathSegments[0]) {
       pages.add(MaterialPage(
           key: ValueKey('LoginScreen'),
           child: UserScreen(
@@ -73,10 +75,11 @@ class MyRouterDelegate extends RouterDelegate<AppConfig>
       onPopPage: (route, result) {
         if (!route.didPop(result)) {
           return false;
-        } else if (currentState.firstSection == UrlFirstSection.book() &&
+        } else if (currentState.uri.pathSegments[0] ==
+                AppConfig.book().uri.pathSegments[0] &&
             currentState.id != null) {
           currentState = AppConfig.book();
-        } else if (currentState.firstSection == UrlFirstSection.user()) {
+        } else if (currentState.uri.path == AppConfig.user().uri.path) {
           currentState = previousState;
           previousState = null;
         } else {

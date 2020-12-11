@@ -1,77 +1,36 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-
-abstract class UrlSection extends Equatable {
-  final String name;
-  final String urlName;
-
-  UrlSection({@required this.name, @required this.urlName});
-
-  String toString() {
-    return "Section{name:" + name + ",path:" + urlName + "}";
-  }
-
-  @override
-  List<Object> get props => [name, urlName];
-}
-
-class UrlFirstSection extends UrlSection {
-  UrlFirstSection.book() : super(name: "book", urlName: "book");
-  UrlFirstSection.user() : super(name: "user", urlName: "user");
-}
-
-class UrlSecondSection extends UrlSection {}
-
-class UrlSecondSectionUser extends UrlSection {}
 
 class AppConfig extends Equatable {
-  final bool isUnknown;
-  final UrlFirstSection firstSection;
-  final UrlSecondSection secondSection;
+  final Uri uri;
   final int id;
 
   AppConfig.user()
-      : isUnknown = false,
-        firstSection = UrlFirstSection.user(),
-        secondSection = null,
+      : uri = Uri(path: "/user"),
         id = null;
 
   AppConfig.book()
-      : isUnknown = false,
-        firstSection = UrlFirstSection.book(),
-        secondSection = null,
+      : uri = Uri(path: "/book"),
         id = null;
 
-  AppConfig.bookDetail(this.id)
-      : isUnknown = false,
-        firstSection = UrlFirstSection.book(),
-        secondSection = null;
+  AppConfig.bookDetail(this.id) : uri = Uri(path: "/book/${id.toString()}");
 
   AppConfig.unknown()
-      : isUnknown = true,
-        firstSection = null,
-        secondSection = null,
+      : uri = Uri(path: "/unknown"),
         id = null;
 
-  bool get isUserSection => (firstSection == UrlFirstSection.user());
+  bool get isUserSection => (uri == AppConfig.user().uri);
 
-  bool get isBookSection => (firstSection == UrlFirstSection.book());
+  bool get isBookSection => (uri == AppConfig.book().uri);
 
-  bool get isBookDetailSection => (isBookSection && id != null);
+  bool get isBookDetailSection => (id != null);
+
+  bool get isUnknown => (uri == AppConfig.unknown().uri);
 
   @override
   String toString() {
-    return "AppState{ isUnknown : " +
-        isUnknown.toString() +
-        ", firstSection : " +
-        firstSection.toString() +
-        ", secondSection : " +
-        secondSection.toString() +
-        ", id : " +
-        id.toString() +
-        "}";
+    return "AppConfig{ uriPath : " + uri.path + ", id : " + id.toString() + "}";
   }
 
   @override
-  List<Object> get props => [isUnknown, firstSection, secondSection, id];
+  List<Object> get props => [uri.path, id];
 }
