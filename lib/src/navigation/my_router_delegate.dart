@@ -41,6 +41,7 @@ class MyRouterDelegate extends RouterDelegate<AppConfig>
         ),
       ),
     );
+<<<<<<< HEAD
 
     if (currentState.uri.pathSegments[0] ==
         AppConfig.book().uri.pathSegments[0]) {
@@ -52,6 +53,17 @@ class MyRouterDelegate extends RouterDelegate<AppConfig>
         );
     } else if (currentState.uri.pathSegments[0] ==
         AppConfig.user().uri.pathSegments[0]) {
+=======
+    if (currentState.firstSection == UrlFirstSection.book() &&
+        currentState.id != null) {
+      pages.add(
+        MaterialPage(
+            key: ValueKey('BookListPageId' + currentState.id.toString()),
+            child: BookDetailsScreen(book: books[currentState.id])),
+      );
+    }
+    if (currentState.firstSection == UrlFirstSection.user()) {
+>>>>>>> f72cd4a60dda5ded6a7c5061ffc309a1eb2aff86
       pages.add(MaterialPage(
           key: ValueKey('LoginScreen'),
           child: UserScreen(
