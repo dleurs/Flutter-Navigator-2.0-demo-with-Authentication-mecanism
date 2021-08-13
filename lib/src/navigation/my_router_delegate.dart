@@ -1,108 +1,70 @@
 import 'package:flutter/material.dart';
-
-import 'package:navigator_v2_flutter_with_auth/src/model/book.dart';
-import 'package:navigator_v2_flutter_with_auth/src/navigation/app_config.dart';
-import 'package:navigator_v2_flutter_with_auth/src/screen/book_details_screen.dart';
-import 'package:navigator_v2_flutter_with_auth/src/screen/books_list_screen.dart';
-import 'package:navigator_v2_flutter_with_auth/src/screen/user_screen.dart';
+import 'package:navigator_v2_flutter_with_auth/src/navigation/app_state.dart';
+import 'package:navigator_v2_flutter_with_auth/src/screen/home_screen.dart';
+import 'package:navigator_v2_flutter_with_auth/src/screen/settings_screen.dart';
 import 'package:navigator_v2_flutter_with_auth/src/screen/unknown_screen.dart';
 
-class MyRouterDelegate extends RouterDelegate<AppConfig>
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin<AppConfig> {
+class MyRouterDelegate extends RouterDelegate<AppState> with ChangeNotifier, PopNavigatorRouterDelegateMixin<AppState> {
   final GlobalKey<NavigatorState> navigatorKey;
 
-  AppConfig currentState = AppConfig.book();
-  AppConfig? previousState;
-  // for pop on User Page, to possibly go back to a specific book
-
-  List<Book> books = [
-    Book('Stranger in a Strange Land', 'Robert A. Heinlein'),
-    Book('Foundation', 'Isaac Asimov'),
-    Book('Fahrenheit 451', 'Ray Bradbury'),
-  ];
+  AppState currentState = HomeScreen.state;
 
   MyRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>() {
-    print("1. BookRouterDelegate initialized");
-    print(this);
-    assert(AppConfig.book() == this.currentConfiguration);
+    print('1. MyRouterDelegate initialized');
+    assert(this.currentConfiguration == HomeScreen.state);
   }
 
-  AppConfig get currentConfiguration {
-    return currentState;
-  }
+  AppState get currentConfiguration => currentState;
 
   List<Page<dynamic>> buildPage() {
     List<Page<dynamic>> pages = [];
+    // is shown even when currentState == null
     pages.add(
       MaterialPage(
-        key: ValueKey('BooksListPage'),
-        child: BooksListScreen(
-          books: books,
-        ),
+        key: ValueKey(HomeScreen.state.hashCode),
+        child: HomeScreen(),
       ),
     );
-    if (currentState.uri.pathSegments[0] == AppConfig.book().uri.pathSegments[0]) {
-      if (currentState.id != null)
-        pages.add(
-          MaterialPage(
-              key: ValueKey('BookListPageId' + currentState.id.toString()),
-              child: BookDetailsScreen(book: books[currentState.id!])),
-        );
-    } else if (currentState.uri.pathSegments[0] == AppConfig.user().uri.pathSegments[0]) {
-      pages.add(MaterialPage(
-          key: ValueKey('LoginScreen'),
-          child: UserScreen(
-            refresh: _notifyListeners,
-          )));
+    if (currentState == SettingsScreen.state) {
+      pages.add(MaterialPage(key: ValueKey(SettingsScreen.state.hashCode), child: SettingsScreen()));
+    } else if (currentState == UnknownScreen.state) {
+      pages.add(MaterialPage(key: ValueKey(UnknownScreen.state.hashCode), child: UnknownScreen()));
     }
-    if (currentState.isUnknown) pages.add(MaterialPage(key: ValueKey('UnknownPage'), child: UnknownScreen()));
+
     return pages;
   }
 
   @override
   Widget build(BuildContext context) {
-    print("BookRouterDelegate building...");
-    print(this.currentState);
+    print("MyRouterDelegate building : " + this.currentState.toString());
     return Navigator(
       key: navigatorKey,
-      //transitionDelegate: AnimationTransitionDelegate(),
       pages: buildPage(),
       onPopPage: (route, result) {
         if (!route.didPop(result)) {
           return false;
-        } else if (currentState.uri.pathSegments[0] == AppConfig.book().uri.pathSegments[0] &&
-            currentState.id != null) {
-          currentState = AppConfig.book();
-        } else if (currentState.uri.path == AppConfig.user().uri.path) {
-          currentState = previousState!;
-          previousState = null;
-        } else {
-          currentState = AppConfig.unknown();
         }
+        currentState = HomeScreen.state;
         notifyListeners();
+
         return true;
       },
     );
   }
 
   @override
-  Future<void> setNewRoutePath(AppConfig newState) async {
+  Future<void> setNewRoutePath(AppState newState) async {
     currentState = newState;
     return;
   }
 
-  void handleBookTapped(Book book) {
-    currentState = AppConfig.bookDetail(books.indexOf(book));
+  void toSettingsScreen() {
+    currentState = SettingsScreen.state;
     notifyListeners();
   }
 
-  void handleUserTapped(void nulll) {
-    previousState = currentState;
-    currentState = AppConfig.user();
-    notifyListeners();
-  }
-
-  void _notifyListeners(void nothing) {
+  void toHomeScreen() {
+    currentState = HomeScreen.state;
     notifyListeners();
   }
 }

@@ -1,48 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:navigator_v2_flutter_with_auth/src/navigation/app_state.dart';
+import 'package:navigator_v2_flutter_with_auth/src/screen/home_screen.dart';
+import 'package:navigator_v2_flutter_with_auth/src/screen/settings_screen.dart';
+import 'package:navigator_v2_flutter_with_auth/src/screen/unknown_screen.dart';
 
-import 'package:navigator_v2_flutter_with_auth/src/navigation/app_config.dart';
-
-class MyRouteInformationParser extends RouteInformationParser<AppConfig> {
+class MyRouteInformationParser extends RouteInformationParser<AppState> {
   @override
-  Future<AppConfig> parseRouteInformation(RouteInformation routeInformation) async {
+  Future<AppState> parseRouteInformation(RouteInformation routeInformation) async {
     final uri = Uri.parse(routeInformation.location ?? '');
-    // Handle '/' and '/book'
-    if (uri.pathSegments.length == 0 ||
-        (uri.pathSegments.length == 1 && uri.pathSegments[0] == AppConfig.book().uri.pathSegments[0])) {
-      return AppConfig.book();
+    // Handle '/'
+    if (uri.pathSegments.length == 0) {
+      return HomeScreen.state;
     }
-
-    if ((uri.pathSegments.length == 1 && uri.pathSegments[0] == AppConfig.user().uri.pathSegments[0])) {
-      return AppConfig.user();
-    }
-
-    // Handle '/book/:id'
-    if (uri.pathSegments.length == 2) {
-      if (uri.pathSegments[0] == AppConfig.book().uri.pathSegments[0]) {
-        var remaining = uri.pathSegments[1];
-        var id = int.tryParse(remaining);
-        if (id == null) return AppConfig.unknown();
-        return AppConfig.bookDetail(id);
+    // Handle '/details'
+    if (uri.pathSegments.length == 1) {
+      if (uri.pathSegments[0] == SettingsScreen.state.uri.pathSegments[0]) {
+        return SettingsScreen.state;
       }
     }
-
     // Handle unknown routes
-    return AppConfig.unknown();
+    return UnknownScreen.state;
   }
 
   @override
-  RouteInformation restoreRouteInformation(AppConfig path) {
-    if (path.isUnknown) {
-      return RouteInformation(location: AppConfig.unknown().uri.path);
+  RouteInformation restoreRouteInformation(AppState state) {
+    if (state == UnknownScreen.state) {
+      return RouteInformation(location: UnknownScreen.state.uri.path);
     }
-    if (path.isBookSection) {
-      return RouteInformation(location: AppConfig.book().uri.path);
+    if (state == HomeScreen.state) {
+      return RouteInformation(location: HomeScreen.state.uri.path);
     }
-    if (path.isBookDetailSection) {
-      return RouteInformation(location: AppConfig.bookDetail(path.id).uri.path);
-    }
-    if (path.isUserSection) {
-      return RouteInformation(location: AppConfig.user().uri.path);
+    if (state == SettingsScreen.state) {
+      return RouteInformation(location: SettingsScreen.state.uri.path);
     }
     return RouteInformation();
   }
