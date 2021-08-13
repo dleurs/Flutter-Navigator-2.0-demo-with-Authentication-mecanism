@@ -6,7 +6,7 @@ import 'package:navigator_v2_flutter_with_auth/src/navigation/my_router_delegate
 class BookDetailsScreen extends StatelessWidget {
   final Book book;
 
-  BookDetailsScreen({Key key, @required this.book}) : super(key: key);
+  BookDetailsScreen({Key? key, required this.book}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +18,7 @@ class BookDetailsScreen extends StatelessWidget {
                 Icons.portrait,
               ),
               onPressed: () {
-                (Router.of(context).routerDelegate as MyRouterDelegate)
-                    .handleUserTapped(null);
+                (Router.of(context).routerDelegate as MyRouterDelegate).handleUserTapped(null);
               })
         ],
       ),
@@ -28,10 +27,8 @@ class BookDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (book != null) ...[
-              Text(book.title, style: Theme.of(context).textTheme.headline6),
-              Text(book.author, style: Theme.of(context).textTheme.subtitle1),
-            ],
+            Text(book.title, style: Theme.of(context).textTheme.headline6),
+            Text(book.author, style: Theme.of(context).textTheme.subtitle1),
           ],
         ),
       ),

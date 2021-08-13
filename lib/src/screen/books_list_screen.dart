@@ -8,7 +8,7 @@ class BooksListScreen extends StatelessWidget {
   final List<Book> books;
 
   BooksListScreen({
-    @required this.books,
+    required this.books,
   });
 
   @override
@@ -21,8 +21,7 @@ class BooksListScreen extends StatelessWidget {
                 Icons.portrait,
               ),
               onPressed: () {
-                (Router.of(context).routerDelegate as MyRouterDelegate)
-                    .handleUserTapped(null);
+                (Router.of(context).routerDelegate as MyRouterDelegate).handleUserTapped(null);
               })
         ],
       ),
@@ -31,9 +30,7 @@ class BooksListScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              AuthenticationManager.instance.isLoggedIn
-                  ? "You are connected"
-                  : "You are not connected",
+              AuthenticationManager.instance.isLoggedIn ? "You are connected" : "You are not connected",
               style: Theme.of(context).textTheme.headline6,
             ),
           ),
@@ -45,8 +42,7 @@ class BooksListScreen extends StatelessWidget {
                     title: Text(book.title),
                     subtitle: Text(book.author),
                     onTap: () {
-                      (Router.of(context).routerDelegate as MyRouterDelegate)
-                          .handleBookTapped(book);
+                      (Router.of(context).routerDelegate as MyRouterDelegate).handleBookTapped(book);
                     })
             ],
           ),

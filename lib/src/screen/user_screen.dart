@@ -6,7 +6,7 @@ import 'package:navigator_v2_flutter_with_auth/src/screen/base_screen.dart';
 class UserScreen extends StatefulWidget {
   final ValueChanged refresh;
 
-  UserScreen({Key key, @required this.refresh}) : super(key: key);
+  UserScreen({Key? key, required this.refresh}) : super(key: key);
 
   @override
   _UserScreenState createState() => _UserScreenState();
@@ -82,5 +82,16 @@ class _UserScreenState extends BaseScreenState<UserScreen> {
   @override
   void onLoggedOut() {
     widget.refresh(null);
+  }
+
+  @override
+  Widget buildBottomNavigationBar(BuildContext context) {
+    return SizedBox();
+  }
+
+  @override
+  Widget buildFloatingActionButton(BuildContext context) {
+    // TODO: implement buildFloatingActionButton
+    return SizedBox();
   }
 }

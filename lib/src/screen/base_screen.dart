@@ -65,25 +65,19 @@ abstract class BaseScreenState<T extends StatefulWidget> extends State<T> {
   /// Implement this to build an [AppBar] for all screens
   /// Override this method in each screen that needs a specific one
   ///
-  PreferredSizeWidget buildAppBar(BuildContext context) {
-    return null;
-  }
+  PreferredSizeWidget buildAppBar(BuildContext context);
 
   ///
   /// Implement this to build a [BottomNavigationBar] for all screens
   /// Override this method in each screen that needs a specific one
   ///
-  Widget buildBottomNavigationBar(BuildContext context) {
-    return null;
-  }
+  Widget buildBottomNavigationBar(BuildContext context);
 
   ///
   /// Implement this to build a [FloatingActionButton] for all screens
   /// Override this method in each screen that needs a specific one
   ///
-  Widget buildFloatingActionButton(BuildContext context) {
-    return null;
-  }
+  Widget buildFloatingActionButton(BuildContext context);
 
   ///
   /// Default back navigation behavior

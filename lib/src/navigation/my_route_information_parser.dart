@@ -4,18 +4,15 @@ import 'package:navigator_v2_flutter_with_auth/src/navigation/app_config.dart';
 
 class MyRouteInformationParser extends RouteInformationParser<AppConfig> {
   @override
-  Future<AppConfig> parseRouteInformation(
-      RouteInformation routeInformation) async {
-    final uri = Uri.parse(routeInformation.location);
+  Future<AppConfig> parseRouteInformation(RouteInformation routeInformation) async {
+    final uri = Uri.parse(routeInformation.location ?? '');
     // Handle '/' and '/book'
     if (uri.pathSegments.length == 0 ||
-        (uri.pathSegments.length == 1 &&
-            uri.pathSegments[0] == AppConfig.book().uri.pathSegments[0])) {
+        (uri.pathSegments.length == 1 && uri.pathSegments[0] == AppConfig.book().uri.pathSegments[0])) {
       return AppConfig.book();
     }
 
-    if ((uri.pathSegments.length == 1 &&
-        uri.pathSegments[0] == AppConfig.user().uri.pathSegments[0])) {
+    if ((uri.pathSegments.length == 1 && uri.pathSegments[0] == AppConfig.user().uri.pathSegments[0])) {
       return AppConfig.user();
     }
 
@@ -47,6 +44,6 @@ class MyRouteInformationParser extends RouteInformationParser<AppConfig> {
     if (path.isUserSection) {
       return RouteInformation(location: AppConfig.user().uri.path);
     }
-    return null;
+    return RouteInformation();
   }
 }

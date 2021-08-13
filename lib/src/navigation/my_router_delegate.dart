@@ -12,7 +12,7 @@ class MyRouterDelegate extends RouterDelegate<AppConfig>
   final GlobalKey<NavigatorState> navigatorKey;
 
   AppConfig currentState = AppConfig.book();
-  AppConfig previousState;
+  AppConfig? previousState;
   // for pop on User Page, to possibly go back to a specific book
 
   List<Book> books = [
@@ -41,25 +41,21 @@ class MyRouterDelegate extends RouterDelegate<AppConfig>
         ),
       ),
     );
-    if (currentState.uri.pathSegments[0] ==
-        AppConfig.book().uri.pathSegments[0]) {
+    if (currentState.uri.pathSegments[0] == AppConfig.book().uri.pathSegments[0]) {
       if (currentState.id != null)
         pages.add(
           MaterialPage(
               key: ValueKey('BookListPageId' + currentState.id.toString()),
-              child: BookDetailsScreen(book: books[currentState.id])),
+              child: BookDetailsScreen(book: books[currentState.id!])),
         );
-    } else if (currentState.uri.pathSegments[0] ==
-        AppConfig.user().uri.pathSegments[0]) {
+    } else if (currentState.uri.pathSegments[0] == AppConfig.user().uri.pathSegments[0]) {
       pages.add(MaterialPage(
           key: ValueKey('LoginScreen'),
           child: UserScreen(
             refresh: _notifyListeners,
           )));
     }
-    if (currentState.isUnknown)
-      pages.add(
-          MaterialPage(key: ValueKey('UnknownPage'), child: UnknownScreen()));
+    if (currentState.isUnknown) pages.add(MaterialPage(key: ValueKey('UnknownPage'), child: UnknownScreen()));
     return pages;
   }
 
@@ -74,12 +70,11 @@ class MyRouterDelegate extends RouterDelegate<AppConfig>
       onPopPage: (route, result) {
         if (!route.didPop(result)) {
           return false;
-        } else if (currentState.uri.pathSegments[0] ==
-                AppConfig.book().uri.pathSegments[0] &&
+        } else if (currentState.uri.pathSegments[0] == AppConfig.book().uri.pathSegments[0] &&
             currentState.id != null) {
           currentState = AppConfig.book();
         } else if (currentState.uri.path == AppConfig.user().uri.path) {
-          currentState = previousState;
+          currentState = previousState!;
           previousState = null;
         } else {
           currentState = AppConfig.unknown();

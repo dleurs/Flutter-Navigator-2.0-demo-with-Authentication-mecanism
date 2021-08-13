@@ -27,7 +27,7 @@ class AuthenticationSuccessState extends AuthenticationState {
 class AuthenticationErrorState extends AuthenticationState {
   final String error;
 
-  AuthenticationErrorState({this.error});
+  AuthenticationErrorState({required this.error});
 
   @override
   String toString() {

@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class AppConfig extends Equatable {
   final Uri uri;
-  final int id;
+  final int? id;
 
   AppConfig.user()
       : uri = Uri(path: "/user"),
@@ -32,5 +32,5 @@ class AppConfig extends Equatable {
   }
 
   @override
-  List<Object> get props => [uri.path, id];
+  List<Object> get props => [uri.path, id ?? ''];
 }
