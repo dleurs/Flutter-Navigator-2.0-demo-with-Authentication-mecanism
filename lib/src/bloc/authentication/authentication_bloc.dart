@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:navigator_v2_flutter_with_auth/src/bloc/authentication/authentication_event.dart';
 import 'package:navigator_v2_flutter_with_auth/src/bloc/authentication/authentication_state.dart';
@@ -10,25 +8,24 @@ class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   final LoginRepository _repository;
 
-  AuthenticationBloc(this._repository) : super(InitialAuthenticationState());
+  AuthenticationBloc(this._repository) : super(InitialAuthenticationState()) {
+    on<LoginEvent>(_logUserIn);
+    on<LogoutEvent>(_logUserOut);
+  }
 
-  @override
-  Stream<AuthenticationState> mapEventToState(
-      AuthenticationEvent event) async* {
-    yield AuthenticationProcessingState();
-    if (event is LoginEvent) {
-      if (await _repository.login()) {
-        AuthenticationManager.instance.isLoggedIn = true;
-        yield AuthenticationSuccessState();
-      } else {
-        AuthenticationManager.instance.isLoggedIn = false;
-        yield AuthenticationErrorState(error: 'Login failed');
-      }
-    }
-    if (event is LogoutEvent) {
-      await _repository.logout();
+  void _logUserIn(LoginEvent event, Emitter<AuthenticationState> emit) async {
+    if (await _repository.login()) {
+      AuthenticationManager.instance.isLoggedIn = true;
+      emit(AuthenticationSuccessState());
+    } else {
       AuthenticationManager.instance.isLoggedIn = false;
-      yield LoggedOutState();
+      emit(AuthenticationErrorState(error: 'Login failed'));
     }
+  }
+
+  void _logUserOut(LogoutEvent event, Emitter<AuthenticationState> emit) {
+    _repository.logout();
+    AuthenticationManager.instance.isLoggedIn = false;
+    emit(LoggedOutState());
   }
 }

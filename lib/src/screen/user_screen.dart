@@ -38,7 +38,7 @@ class _UserScreenState extends BaseScreenState<UserScreen> {
         child: Text('Enter password'),
       ));
       column.add(
-        RaisedButton(
+        ElevatedButton(
           onPressed: () {
             this.doLogin();
           },
