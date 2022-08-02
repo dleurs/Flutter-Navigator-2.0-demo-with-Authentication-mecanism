@@ -10,25 +10,24 @@ class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   final LoginRepository _repository;
 
-  AuthenticationBloc(this._repository) : super(InitialAuthenticationState());
 
-  @override
-  Stream<AuthenticationState> mapEventToState(
-      AuthenticationEvent event) async* {
-    yield AuthenticationProcessingState();
-    if (event is LoginEvent) {
-      if (await _repository.login()) {
-        AuthenticationManager.instance.isLoggedIn = true;
-        yield AuthenticationSuccessState();
-      } else {
-        AuthenticationManager.instance.isLoggedIn = false;
-        yield AuthenticationErrorState(error: 'Login failed');
+  AuthenticationBloc(this._repository) : super(InitialAuthenticationState()) {
+    on<LoginEvent>((event, emit) async {
+      if (event is LoginEvent) {
+        if (await _repository.login()) {
+          AuthenticationManager.instance.isLoggedIn = true;
+          emit(AuthenticationSuccessState());
+        } else {
+          AuthenticationManager.instance.isLoggedIn = false;
+          emit(AuthenticationErrorState(error: 'Login failed'));
+        }
       }
-    }
-    if (event is LogoutEvent) {
-      await _repository.logout();
-      AuthenticationManager.instance.isLoggedIn = false;
-      yield LoggedOutState();
-    }
+      if (event is LogoutEvent) {
+        await _repository.logout();
+        AuthenticationManager.instance.isLoggedIn = false;
+        emit(LoggedOutState());
+      }
+    });
   }
+
 }
